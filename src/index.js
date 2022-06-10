@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 // added "type": "module", inside package.json file to fix "SyntaxError: Cannot use import statement outside a module"
+let reverseMoves = false;
 
 function Square(props) {
   return (
@@ -41,7 +42,6 @@ class Board extends React.Component {
       }
       renderSquares.push(<div className="board-row" key={row}>{squaresRow}</div>);
     };
-    console.log("renderSquares:" + renderSquares[0]);
     return (
       <div>
         {renderSquares}
@@ -69,7 +69,7 @@ class Game extends React.Component {
     const squares = current.squares.slice();
     
     // makes shallow copy of squares
-    console.log("CLicked square " + i);
+    console.log("Clicked square " + i);
     if (squares[i] !== null || calculateWinner(squares) !== null) {
       return;
     }
@@ -116,23 +116,7 @@ class Game extends React.Component {
       }
     }
 
-    // let desc = 'Go to game start';
-    // // can use move as key since it is unique (move is an index)
-    // <li key ={0}>
-    //   <button onClick={() => this.jumpTo(0)}>{desc}</button>
-    // </li>
-    // ;
-    // for (let i = 1; i < history.length; i++) {
-    //   const result = findDifference(i);
-    //   const desc = 'Go to move #' + i + ": " + ((i % 2) ? "X": "O") + " at " + 0;
-    //   <li key ={i}>
-    //     <button onClick={() => this.jumpTo(i)}>{desc}</button>
-    //   </li>
-    // }
-
     const moves = history.map((step, move) => {
-    //   // console.log("step:", step);
-    //   // console.log("move:", move);
       const temp = findDifference(step, this.state.history[move - 1]);
       const x = temp % 3;   // math to get column
       const y = Math.floor(temp / 3);   // math to get row
@@ -143,7 +127,7 @@ class Game extends React.Component {
         return (
           // can use move as key since it is unique (move is an index)
           <li key ={move}>
-            <button onClick={() => this.jumpTo(move)}>{<b>{desc.fontcolor("blue")}</b>}</button>
+            <button onClick={() => this.jumpTo(move)}>{<b>{desc}</b>}</button>
           </li>
         );
       } else {
@@ -172,7 +156,6 @@ class Game extends React.Component {
       }
     }
     // added a "Tie Game" end screen
-    let reverseMoves = false;
     let currentMoves = moves;
     if (reverseMoves) {
       currentMoves = currentMoves.reverse();
@@ -188,9 +171,10 @@ class Game extends React.Component {
         <div className="game-info">
           <div>{status}</div>
           <ol>{currentMoves}</ol>
+          <div><button onClick={() => {reverseMoves = !reverseMoves; root.render(<Game />)}}>Reverse Buttons</button></div>
         </div>
       </div>
-    );
+    );    // root.render(<Game />) rerenders game so that the screen updates as the button is clicked
   }
 }
 
