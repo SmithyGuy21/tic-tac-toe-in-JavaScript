@@ -7,9 +7,13 @@ import './index.css';
 let reverseMoves = false;
 
 function Square(props) {
+  const highlight = {
+    backgroundColor: "#ccc"
+  };
+
   return (
-    <button className="square"
-      onClick={() => {props.onClick(); console.log("Clicked a square")}}
+    <button className="square" style={props.isHighlighted ? highlight: null}
+      onClick={() => {props.onClick(); console.log("props.isHighlighted:" + props.isHighlighted)}}
       // ^ two functions for each time the square is clicked, a print and Board on click handler
     >
       {props.data}
@@ -25,9 +29,12 @@ function Square(props) {
 class Board extends React.Component {
 
   renderSquare(i) {
+    let isHighlighted = this.props.winner && this.props.winningSquares.includes(i) ? true: false;
+    // if there is a winner, winningSquares can be called so that the includes function can be run
     return (
       <Square data={this.props.squares[i]}
       onClick={() => this.props.onClick(i)}
+      isHighlighted = {isHighlighted}
       />
     );
   }
@@ -141,7 +148,7 @@ class Game extends React.Component {
     let status;
     let remainingSpace = false;
     if (winner !== null) {
-      status = 'Winner: ' + winner;
+      status = 'Winner: ' + winner.winner;
     } else {
       for (let i = 0; i < current.squares.length; i++) {
         if (current.squares[i] === null) {
@@ -166,6 +173,9 @@ class Game extends React.Component {
           <Board 
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
+            winner={winner}
+            winningSquares={winner ? winner.winningSquares: null}
+            // winner is used to detect if there is a winner so that winningSquares is not called on a null object
           />
         </div>
         <div className="game-info">
@@ -192,7 +202,9 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i]
     if (squares[a] !== null && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {winner: squares[a],
+        winningSquares: lines[i]
+      };
     }
   }
   return null;
