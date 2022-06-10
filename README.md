@@ -1,0 +1,1 @@
+This is a project for learning JavaScript and React for my nonprofit internship. I am also refamiliarizing myself with GitHUb. README2.md is the original README file that came with this project. I did not want to delete all the links to it so I left it as is. I have added some of the extra stuff at the end of the tutorial
